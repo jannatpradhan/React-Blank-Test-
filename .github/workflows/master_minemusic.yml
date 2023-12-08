@@ -26,12 +26,18 @@ jobs:
           npm install
           npm run build --if-present
           npm run test --if-present
-      
+          
+      - name: Zip Release
+        uses: TheDoctor0/zip-release@0.7.6
+        with:
+          filename: release.zip
+          path: ./build/*
+          
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
           name: node-app
-          path: .
+          path: release.zip
 
   deploy:
     runs-on: ubuntu-latest
@@ -52,5 +58,5 @@ jobs:
         with:
           app-name: 'MineMusic'
           slot-name: 'Production'
-          package: .
+          package: release.zip
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_D9E8C1FE3806475DBC99C7E6BFC5C446 }}
